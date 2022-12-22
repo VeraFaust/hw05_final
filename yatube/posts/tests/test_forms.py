@@ -98,7 +98,7 @@ class PostFormTests(TestCase):
         self.assertEqual(Post.objects.count(), post_count + 1)
         self.assertEqual(post.text, self.post.text)
         self.assertEqual(post.author, self.post.author)
-        self.assertEqual(post.group, self.post.group)   
+        self.assertEqual(post.group, self.post.group)  
 
     def test_edit_post_authorized_client(self):
         """Редактирование поста авторизованным пользователем"""

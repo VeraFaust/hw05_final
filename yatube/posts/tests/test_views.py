@@ -288,7 +288,6 @@ class PostPagesTests(TestCase):
         )
         self.assertNotEqual(Follow.objects.count(), follow_count)
 
-
     def test_authorized_client_unfollow(self):
         """Отписка авторизованным клиентом
         от других пользователей"""
@@ -316,14 +315,22 @@ class PostPagesTests(TestCase):
             user=user,
             author=author
         )
-        count_folllow_one = len(Post.objects.filter(author__following__user=user))
+        count_folllow_one = len(
+            Post.objects.filter(
+                author__following__user=user
+            )
+        )
         Post.objects.create(
             text='Новый пост',
             author=self.post.author,
             group=self.group
         )
         cache.clear()
-        count_folllow_two = len(Post.objects.filter(author__following__user=user))
+        count_folllow_two = len(
+            Post.objects.filter(
+                author__following__user=user
+            )
+        )
         self.assertNotEqual(count_folllow_one, count_folllow_two)
 
     def test_new_post_for_unfollow(self):

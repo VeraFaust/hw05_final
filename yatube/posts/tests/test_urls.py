@@ -42,7 +42,7 @@ class PostURLTests(TestCase):
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-    
+
     def test_url_reverse_create_post(self):
         url_reverse = {
             reverse('posts:index'): '/',

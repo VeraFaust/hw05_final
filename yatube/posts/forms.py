@@ -15,10 +15,11 @@ class PostForm(ModelForm):
             'text': 'Текст поста'
         }
 
+
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ['text',]
+        fields = ['text']
         help_texts = {
             'text': 'Напишите комментарий',
         }
