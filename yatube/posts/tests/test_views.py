@@ -130,7 +130,7 @@ class PostPagesTests(TestCase):
             page_obj = response.context['page_obj']
             self.assertIn(post, page_obj)
             image_obj = response.context['page_obj']
-            self.assertIn(post, image_obj) 
+            self.assertIn(post, image_obj)
             # не совсем понятно как реализовать. Как в post_detail?
 
     def test_group_list_page_show_correct_context(self):
@@ -151,7 +151,7 @@ class PostPagesTests(TestCase):
             self.assertIn(post, page_obj)
             self.assertIn('page_obj', response.context)
             image_obj = response.context['page_obj']
-            self.assertIn(post, image_obj) 
+            self.assertIn(post, image_obj)
 
     def test_profile_page_show_correct_context(self):
         """Шаблон profile.html сформирован

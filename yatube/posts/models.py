@@ -76,7 +76,7 @@ class Comment(models.Model):
         'Дата публикации',
         auto_now_add=True
     )
-    
+
     class Meta:
         ordering = ['-created']
         verbose_name = 'Комментарий'
