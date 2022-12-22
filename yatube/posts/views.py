@@ -145,7 +145,7 @@ def profile_follow(request, username):
         author=author
     )
     if request.user != author and not follow.exists():
-        Follow.objects.create(
+        Follow.objects.get_or_create(
             user=request.user,
             author=author
         )

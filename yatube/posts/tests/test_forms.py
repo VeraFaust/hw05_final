@@ -99,6 +99,7 @@ class PostFormTests(TestCase):
         self.assertEqual(post.text, self.post.text)
         self.assertEqual(post.author, self.post.author)
         self.assertEqual(post.group, self.post.group)
+        self.assertEqual(post.image, self.post.image)
 
     def test_edit_post_authorized_client(self):
         """Редактирование поста авторизованным пользователем"""
@@ -212,7 +213,7 @@ class PostFormTests(TestCase):
         comment = Comment.objects.get(id=self.post.pk)
         self.assertEqual(Comment.objects.count(), comments_count + 1)
         self.assertEqual(comment.text, form_data['text'])
-        self.assertEqual(comment.author, self.post.author)
+        self.assertEqual(comment.author, self.user)
         self.assertEqual(comment.post_id, self.post.pk)
         self.assertRedirects(
             response,

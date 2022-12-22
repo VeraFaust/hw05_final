@@ -59,13 +59,14 @@ class Comment(models.Model):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='comments',
+        verbose_name='Пост'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор',
-        related_name='comments'
+        related_name='comments',
     )
     text = models.TextField(
         'Текст комментария',
@@ -75,9 +76,14 @@ class Comment(models.Model):
         'Дата публикации',
         auto_now_add=True
     )
+    
+    class Meta:
+        ordering = ['-created']
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return self.text
+        return self.text[:15]
 
 
 class Follow(models.Model):
@@ -93,6 +99,12 @@ class Follow(models.Model):
         verbose_name='Автор')
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_follow'
+            )
+        ]
         verbose_name_plural = 'Подписки'
         verbose_name = 'Подписка'
 

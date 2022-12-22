@@ -172,22 +172,7 @@ class PostURLTests(TestCase):
     def test_unexisting_page_users(self):
         """Возврат ошибки 404 пользователям
         при запросе к unexisting_page"""
-        url_page_error = '/unexisting_page/'
-        for url_clients in (
-            self.other_client,
-            self.authorized_client,
-            self.auth_client
-        ):
-            response = url_clients.get(url_page_error)
-            self.assertEqual(
-                response.status_code,
-                HTTPStatus.NOT_FOUND
-            )
-
-    def test_not_unexisting_page_users(self):
-        """Возврат ошибки 404 пользователям
-        при запросе к not_unexisting_page"""
-        url_page_error_2 = '/not_unexisting_page/'
+        url_page_error_2 = '/unexisting_page/'
         for url_clients in (
             self.other_client,
             self.authorized_client,

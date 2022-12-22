@@ -130,7 +130,8 @@ class PostPagesTests(TestCase):
             page_obj = response.context['page_obj']
             self.assertIn(post, page_obj)
             image_obj = response.context['page_obj']
-            self.assertIn(post, image_obj)
+            self.assertIn(post, image_obj) 
+            # не совсем понятно как реализовать. Как в post_detail?
 
     def test_group_list_page_show_correct_context(self):
         """Шаблон group_list.html сформирован с правильным контекстом"""
@@ -150,7 +151,7 @@ class PostPagesTests(TestCase):
             self.assertIn(post, page_obj)
             self.assertIn('page_obj', response.context)
             image_obj = response.context['page_obj']
-            self.assertIn(post, image_obj)
+            self.assertIn(post, image_obj) 
 
     def test_profile_page_show_correct_context(self):
         """Шаблон profile.html сформирован
@@ -186,10 +187,7 @@ class PostPagesTests(TestCase):
         post_context = (
             response.context['post'])
         self.assertEqual(post_context, self.post)
-        self.assertEqual(
-            response.context['post'].image,
-            self.post.image
-        )
+        self.assertEqual(post_context.image, self.post.image)
 
     def test_create_post_page_show_correct_context(self):
         """Шаблон create_post.html сформирован
@@ -279,7 +277,10 @@ class PostPagesTests(TestCase):
         на других пользователей"""
         follow_count = Follow.objects.count()
         self.authorized_client.get(
-            reverse('posts:follow_index'),
+            reverse(
+                'posts:profile_follow',
+                kwargs={'username': self.user.username}
+            ),
             follow=True
         )
         Follow.objects.create(
@@ -293,7 +294,10 @@ class PostPagesTests(TestCase):
         от других пользователей"""
         follow_count = Follow.objects.count()
         self.authorized_client.get(
-            reverse('posts:follow_index'),
+            reverse(
+                'posts:profile_unfollow',
+                kwargs={'username': self.user.username}
+            ),
             follow=True
         )
         Follow.objects.create(
@@ -305,10 +309,6 @@ class PostPagesTests(TestCase):
 
     def test_new_post_for_followers(self):
         """Отображение постов в ленте у подписчиков"""
-        self.authorized_client.get(
-            reverse('posts:follow_index'),
-            follow=True
-        )
         user = self.user
         author = self.post.author
         Follow.objects.create(
@@ -330,6 +330,10 @@ class PostPagesTests(TestCase):
             Post.objects.filter(
                 author__following__user=user
             )
+        )
+        self.authorized_client.get(
+            reverse('posts:follow_index'),
+            follow=True
         )
         self.assertNotEqual(count_folllow_one, count_folllow_two)
 
