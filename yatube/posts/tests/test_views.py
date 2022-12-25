@@ -145,7 +145,7 @@ class PostPagesTests(TestCase):
             text='Тест-описание поста',
             author=self.user,
             group=self.group,
-            image=self.post.image            
+            image=self.post.image          
         )
         for post in Post.objects.all():
             response = self.authorized_client.get(
