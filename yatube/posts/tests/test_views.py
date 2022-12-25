@@ -46,13 +46,12 @@ class PostPagesTests(TestCase):
             text='Тест-описание поста',
             author=cls.user,
             group=cls.group,
-            image=uploaded,
+            image=uploaded
         )
         cls.post_2 = Post.objects.create(
             text='Тест-описание поста',
             author=cls.user,
-            group=cls.group,
-            image=uploaded
+            group=cls.group
         )
 
     @classmethod
@@ -65,6 +64,10 @@ class PostPagesTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         cache.clear()
+
+    def create_follower(self):
+        auth_client = User.objects.create_user(username='follow')
+        self.authorized_client.force_login(auth_client)
 
     def pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон"""
@@ -119,6 +122,12 @@ class PostPagesTests(TestCase):
     def test_index_page_show_correct_context(self):
         """Шаблон index.html сформирован
         с правильным контекстом"""
+        post_img = Post.objects.create(
+                text='Тест-описание поста',
+                author=self.user,
+                group=self.group,
+                image=self.post.image
+            )
         response = self.authorized_client.get(
             reverse(
                 'posts:index'
@@ -127,14 +136,17 @@ class PostPagesTests(TestCase):
         page_obj = response.context['page_obj']
         for post in Post.objects.select_related('author', 'group'):
             self.assertIn('page_obj', response.context)
-            page_obj = response.context['page_obj']
             self.assertIn(post, page_obj)
-            image_obj = response.context['page_obj']
-            self.assertIn(post, image_obj)
-            # не совсем понятно как реализовать. Как в post_detail?
+            self.assertEqual(post_img.image, self.post.image)
 
     def test_group_list_page_show_correct_context(self):
         """Шаблон group_list.html сформирован с правильным контекстом"""
+        post_img = Post.objects.create(
+                text='Тест-описание поста',
+                author=self.user,
+                group=self.group,
+                image=self.post.image
+            )
         for post in Post.objects.all():
             response = self.authorized_client.get(
                 reverse(
@@ -150,12 +162,17 @@ class PostPagesTests(TestCase):
             )
             self.assertIn(post, page_obj)
             self.assertIn('page_obj', response.context)
-            image_obj = response.context['page_obj']
-            self.assertIn(post, image_obj)
+            self.assertEqual(post_img.image, self.post.image)
 
     def test_profile_page_show_correct_context(self):
         """Шаблон profile.html сформирован
         с правильным контекстом"""
+        post_img = Post.objects.create(
+                text='Тест-описание поста',
+                author=self.user,
+                group=self.group,
+                image=self.post.image
+            )
         for post in Post.objects.all():
             response = self.authorized_client.get(
                 reverse(
@@ -171,8 +188,7 @@ class PostPagesTests(TestCase):
             )
             self.assertIn(post, page_obj)
             self.assertIn('page_obj', response.context)
-            image_obj = response.context['page_obj']
-            self.assertIn(post, image_obj)
+            self.assertEqual(post_img.image, self.post.image)
 
     def test_detail_page_show_correct_context(self):
         """Шаблон post_detail.html сформирован
@@ -184,8 +200,7 @@ class PostPagesTests(TestCase):
             )
         )
         self.assertIn('post', response.context)
-        post_context = (
-            response.context['post'])
+        post_context = response.context['post']
         self.assertEqual(post_context, self.post)
         self.assertEqual(post_context.image, self.post.image)
 
@@ -276,6 +291,7 @@ class PostPagesTests(TestCase):
         """Подписка авторизованным клиентом
         на других пользователей"""
         follow_count = Follow.objects.count()
+        self.create_follower()
         self.authorized_client.get(
             reverse(
                 'posts:profile_follow',
@@ -283,16 +299,17 @@ class PostPagesTests(TestCase):
             ),
             follow=True
         )
-        Follow.objects.create(
-            user=self.user,
-            author=self.post.author
-        )
-        self.assertNotEqual(Follow.objects.count(), follow_count)
+        self.assertEqual(Follow.objects.count(), follow_count + 1)
 
     def test_authorized_client_unfollow(self):
         """Отписка авторизованным клиентом
         от других пользователей"""
+        Follow.objects.create(
+            user=self.user,
+            author=self.post.author
+        ).delete()
         follow_count = Follow.objects.count()
+        self.create_follower()
         self.authorized_client.get(
             reverse(
                 'posts:profile_unfollow',
@@ -300,42 +317,25 @@ class PostPagesTests(TestCase):
             ),
             follow=True
         )
-        Follow.objects.create(
-            user=self.user,
-            author=self.post.author
-        ).delete()
-        cache.close()
         self.assertEqual(Follow.objects.count(), follow_count)
+        cache.clear()
 
     def test_new_post_for_followers(self):
         """Отображение постов в ленте у подписчиков"""
-        user = self.user
-        author = self.post.author
         Follow.objects.create(
-            user=user,
-            author=author
+            user=self.user,
+            author=self.post.author
         )
-        count_folllow_one = len(
-            Post.objects.filter(
-                author__following__user=user
-            )
-        )
-        Post.objects.create(
+        new_post = Post.objects.create(
+            author=self.user,
             text='Новый пост',
-            author=self.post.author,
-            group=self.group
+            group=self.group,
         )
-        cache.clear()
-        count_folllow_two = len(
-            Post.objects.filter(
-                author__following__user=user
-            )
+        response = self.authorized_client.get(
+            reverse('posts:follow_index')
         )
-        self.authorized_client.get(
-            reverse('posts:follow_index'),
-            follow=True
-        )
-        self.assertNotEqual(count_folllow_one, count_folllow_two)
+        first_object = response.context['page_obj'][0]
+        self.assertEqual(new_post, first_object)
 
     def test_new_post_for_unfollow(self):
         """Отсутсвтие постов в ленте у гостя"""

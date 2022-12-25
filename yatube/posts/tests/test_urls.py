@@ -171,7 +171,8 @@ class PostURLTests(TestCase):
 
     def test_unexisting_page_users(self):
         """Возврат ошибки 404 пользователям
-        при запросе к unexisting_page"""
+        при запросе к unexisting_page
+        и проверка его шаблона"""
         url_page_error_2 = '/unexisting_page/'
         for url_clients in (
             self.other_client,
