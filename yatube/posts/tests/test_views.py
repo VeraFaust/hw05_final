@@ -123,11 +123,11 @@ class PostPagesTests(TestCase):
         """Шаблон index.html сформирован
         с правильным контекстом"""
         post_img = Post.objects.create(
-                text='Тест-описание поста',
-                author=self.user,
-                group=self.group,
-                image=self.post.image
-            )
+            text='Тест-описание поста',
+            author=self.user,
+            group=self.group,
+            image=self.post.image
+        )
         response = self.authorized_client.get(
             reverse(
                 'posts:index'
@@ -142,11 +142,11 @@ class PostPagesTests(TestCase):
     def test_group_list_page_show_correct_context(self):
         """Шаблон group_list.html сформирован с правильным контекстом"""
         post_img = Post.objects.create(
-                text='Тест-описание поста',
-                author=self.user,
-                group=self.group,
-                image=self.post.image
-            )
+            text='Тест-описание поста',
+            author=self.user,
+            group=self.group,
+            image=self.post.image            
+        )
         for post in Post.objects.all():
             response = self.authorized_client.get(
                 reverse(
@@ -168,11 +168,11 @@ class PostPagesTests(TestCase):
         """Шаблон profile.html сформирован
         с правильным контекстом"""
         post_img = Post.objects.create(
-                text='Тест-описание поста',
-                author=self.user,
-                group=self.group,
-                image=self.post.image
-            )
+            text='Тест-описание поста',
+            author=self.user,
+            group=self.group,
+            image=self.post.image
+        )
         for post in Post.objects.all():
             response = self.authorized_client.get(
                 reverse(
