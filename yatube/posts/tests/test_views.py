@@ -300,9 +300,9 @@ class PostPagesTests(TestCase):
             follow=True
         )
         new_follow = Follow.objects.filter(
-                user=self.user,
-                author=self.post.author
-            ).exists()
+            user=self.user,
+            author=self.post.author
+        ).exists()
         self.assertEqual(Follow.objects.count(), follow_count + 1)
         self.assertFalse(new_follow)
 
