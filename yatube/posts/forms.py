@@ -6,11 +6,11 @@ from .models import Post, Comment
 class PostForm(ModelForm):
     class Meta:
         model = Post
-        fields = {
+        fields = (
             'text',
             'group',
-            'image',
-        }
+            'image'
+        )
         help_texts = {
             'text': 'Текст нового поста',
             'group': 'Группа нового поста',
