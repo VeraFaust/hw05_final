@@ -300,11 +300,11 @@ class PostPagesTests(TestCase):
             follow=True
         )
         new_follow = Follow.objects.filter(
-            user=self.user,
-            author=self.post.author
-        ).exists()
+                user=self.user,
+                author=self.post.author
+            ).exists()
         self.assertEqual(Follow.objects.count(), follow_count + 1)
-        self.assertEqual(new_follow, follow_count)
+        self.assertFalse(new_follow)
 
     def test_authorized_client_unfollow(self):
         """Отписка авторизованным клиентом
