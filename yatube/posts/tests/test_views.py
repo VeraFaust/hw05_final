@@ -65,7 +65,7 @@ class PostPagesTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         cache.clear()
-    
+
     def create_follow(self):
         self.follow_client = Client()
         self.follow_client.force_login(self.user_follow)
