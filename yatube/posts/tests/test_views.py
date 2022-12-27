@@ -19,6 +19,7 @@ class PostPagesTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
+        cls.user_follow = User.objects.create_user(username="user_follow")
         cls.group = Group.objects.create(
             title='Тест-заголовок группы',
             slug='test-slug',
@@ -64,10 +65,10 @@ class PostPagesTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         cache.clear()
-
-    def create_follower(self):
-        auth_client = User.objects.create_user(username='follow')
-        self.authorized_client.force_login(auth_client)
+    
+    def create_follow(self):
+        self.follow_client = Client()
+        self.follow_client.force_login(self.user_follow)
 
     def pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон"""
@@ -291,30 +292,30 @@ class PostPagesTests(TestCase):
         """Подписка авторизованным клиентом
         на других пользователей"""
         follow_count = Follow.objects.count()
-        self.create_follower()
+        self.create_follow()
         self.authorized_client.get(
             reverse(
                 'posts:profile_follow',
-                kwargs={'username': self.user.username}
+                kwargs={'username': self.user_follow}
             ),
             follow=True
         )
         new_follow = Follow.objects.filter(
             user=self.user,
-            author=self.post.author
+            author=self.user_follow
         ).exists()
         self.assertEqual(Follow.objects.count(), follow_count + 1)
-        self.assertFalse(new_follow)
+        self.assertTrue(new_follow)
 
     def test_authorized_client_unfollow(self):
         """Отписка авторизованным клиентом
         от других пользователей"""
         Follow.objects.create(
             user=self.user,
-            author=self.post.author
+            author=self.user_follow
         )
         follow_count = Follow.objects.count()
-        self.create_follower()
+        self.create_follow
         self.authorized_client.get(
             reverse(
                 'posts:profile_unfollow',
