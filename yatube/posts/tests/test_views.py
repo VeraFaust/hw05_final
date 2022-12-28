@@ -20,6 +20,7 @@ class PostPagesTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
         cls.user_follow = User.objects.create_user(username="auth_follow")
+        cls.user_unfollow = User.objects.create_user(username="auth_unfollow")
         cls.group = Group.objects.create(
             title='Тест-заголовок группы',
             slug='test-slug',
@@ -64,6 +65,8 @@ class PostPagesTests(TestCase):
         self.other_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        self.unfollow_client = Client()
+        self.unfollow_client.force_login(self.user_unfollow)
         cache.clear()
 
     def pages_uses_correct_template(self):
@@ -313,11 +316,11 @@ class PostPagesTests(TestCase):
         self.authorized_client.get(
             reverse(
                 'posts:profile_unfollow',
-                kwargs={'username': self.user.username}
+                kwargs={'username': self.user_follow.username}
             ),
             follow=True
         )
-        self.assertEqual(Follow.objects.count(), follow_count)
+        self.assertEqual(Follow.objects.count(), follow_count - 1)
         cache.clear()
 
     def test_new_post_for_followers(self):
@@ -339,10 +342,25 @@ class PostPagesTests(TestCase):
 
     def test_new_post_for_unfollow(self):
         """Отсутсвтие постов в ленте у гостя"""
-        response = self.authorized_client.get(
+        Follow.objects.create(
+            user=self.user,
+            author=self.user_follow
+        )
+        Post.objects.create(
+            text='Тестовый-текст',
+            author=self.user_unfollow,
+            group=self.group
+        )
+        new_post = Post.objects.create(
+            author=self.user_follow,
+            text='Новый пост',
+            group=self.group,
+        )
+        response = self.unfollow_client.get(
             reverse('posts:follow_index')
         )
         self.assertEqual(len(response.context['page_obj']), 0)
+        self.assertNotEqual(response.context['page_obj'], new_post)
 
 
 class PaginatorViewsTest(TestCase):
