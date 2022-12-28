@@ -19,7 +19,7 @@ class PostPagesTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create_user(username='auth')
-        cls.user_follow = User.objects.create_user(username="user_follow")
+        cls.user_follow = User.objects.create_user(username="auth_follow")
         cls.group = Group.objects.create(
             title='Тест-заголовок группы',
             slug='test-slug',
@@ -65,10 +65,6 @@ class PostPagesTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         cache.clear()
-
-    def create_follow(self):
-        self.follow_client = Client()
-        self.follow_client.force_login(self.user_follow)
 
     def pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон"""
@@ -292,11 +288,10 @@ class PostPagesTests(TestCase):
         """Подписка авторизованным клиентом
         на других пользователей"""
         follow_count = Follow.objects.count()
-        self.create_follow()
         self.authorized_client.get(
             reverse(
                 'posts:profile_follow',
-                kwargs={'username': self.user_follow}
+                kwargs={'username': self.user_follow.username}
             ),
             follow=True
         )
@@ -315,7 +310,6 @@ class PostPagesTests(TestCase):
             author=self.user_follow
         )
         follow_count = Follow.objects.count()
-        self.create_follow
         self.authorized_client.get(
             reverse(
                 'posts:profile_unfollow',
@@ -330,10 +324,10 @@ class PostPagesTests(TestCase):
         """Отображение постов в ленте у подписчиков"""
         Follow.objects.create(
             user=self.user,
-            author=self.post.author
+            author=self.user_follow
         )
         new_post = Post.objects.create(
-            author=self.user,
+            author=self.user_follow,
             text='Новый пост',
             group=self.group,
         )
