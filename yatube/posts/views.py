@@ -14,6 +14,7 @@ LIMIT = 10
 
 
 def get_paginator(posts, request):
+    """Пагинация."""
     paginator = Paginator(posts, LIMIT)
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
@@ -21,6 +22,7 @@ def get_paginator(posts, request):
 
 @cache_page(20)
 def index(request):
+    """Главная страница."""
     post_list = Post.objects.select_related('author', 'group')
     page_obj = get_paginator(post_list, request)
     template = 'posts/index.html'
@@ -31,6 +33,7 @@ def index(request):
 
 
 def group_posts(request, slug):
+    """Страница с постами, отсортированными по группам."""
     group = get_object_or_404(Group, slug=slug)
     post_list = Post.objects.filter(group=group)
     page_obj = get_paginator(post_list, request)
@@ -43,6 +46,7 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
+    """Профайл пользователя."""
     author = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=author)
     page_obj = get_paginator(post_list, request)
@@ -50,7 +54,9 @@ def profile(request, username):
     following = False
     if request.user.is_authenticated and author != request.user:
         following = Follow.objects.filter(
-            user=request.user, author=author).exists()
+            user=request.user,
+            author=author
+        ).exists()
     context = {
         'page_obj': page_obj,
         'author': author,
@@ -60,6 +66,7 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
+    """Страница поста."""
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST or None)
     comments = post.comments.all()
@@ -79,6 +86,7 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
+    """Создание поста."""
     form = PostForm(request.POST or None)
     if not form.is_valid():
         template = 'posts/create_post.html'
@@ -90,14 +98,21 @@ def post_create(request):
     post = form.save(commit=False)
     post.author = request.user
     post.save()
-    return redirect('posts:profile', username=post.author.username)
+    return redirect(
+        'posts:profile',
+        username=post.author.username
+    )
 
 
 @login_required
 def post_edit(request, post_id):
+    """Редактирование поста."""
     post = get_object_or_404(Post, id=post_id)
     if request.user != post.author:
-        return redirect('posts:post_detail', post_id=post_id)
+        return redirect(
+            'posts:post_detail',
+            post_id=post_id
+        )
 
     form = PostForm(
         request.POST or None,
@@ -109,13 +124,21 @@ def post_edit(request, post_id):
             'post_id': post_id,
             'is_edit': True,
         }
-        return render(request, 'posts/create_post.html', context)
+        return render(
+            request,
+            'posts/create_post.html',
+            context
+        )
     form.save()
-    return redirect('posts:post_detail', post_id=post_id)
+    return redirect(
+        'posts:post_detail',
+        post_id=post_id
+    )
 
 
 @login_required
 def add_comment(request, post_id):
+    """Добавление комментария."""
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
@@ -123,11 +146,15 @@ def add_comment(request, post_id):
         comment.author = request.user
         comment.post = post
         comment.save()
-    return redirect('posts:post_detail', post_id=post_id)
+    return redirect(
+        'posts:post_detail',
+        post_id=post_id
+    )
 
 
 @login_required
 def follow_index(request):
+    """Информация о текущем пользователе."""
     post_list = Post.objects.filter(
         author__following__user=request.user)
     page_obj = get_paginator(post_list, request)
@@ -139,6 +166,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
+    """Подписка на автора."""
     author = get_object_or_404(User, username=username)
     if request.user != author:
         Follow.objects.get_or_create(
@@ -150,6 +178,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
+    """Отписка от автора."""
     author = User.objects.get(username=username)
     user_follower = get_object_or_404(
         Follow,

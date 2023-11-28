@@ -4,6 +4,7 @@ from .models import Post, Comment
 
 
 class PostForm(ModelForm):
+
     class Meta:
         model = Post
         fields = (
@@ -23,6 +24,7 @@ class PostForm(ModelForm):
 
 
 class CommentForm(ModelForm):
+
     class Meta:
         model = Comment
         fields = ['text']

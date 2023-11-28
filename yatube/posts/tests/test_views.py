@@ -70,7 +70,7 @@ class PostPagesTests(TestCase):
         cache.clear()
 
     def pages_uses_correct_template(self):
-        """URL-адрес использует соответствующий шаблон"""
+        """URL-адрес использует соответствующий шаблон."""
         templates_pages_names = {
             reverse(
                 'posts:index'
@@ -102,7 +102,7 @@ class PostPagesTests(TestCase):
 
     def test_group_post_2_page_show_correct_context(self):
         """Пост group_post_2 не попал в группу,
-        для которой не предназначен"""
+        для которой не предназначен."""
         response = self.authorized_client.get(
             reverse(
                 'posts:group_list',
@@ -121,7 +121,7 @@ class PostPagesTests(TestCase):
 
     def test_index_page_show_correct_context(self):
         """Шаблон index.html сформирован
-        с правильным контекстом"""
+        с правильным контекстом."""
         post_img = Post.objects.create(
             text='Тест-описание поста',
             author=self.user,
@@ -140,7 +140,7 @@ class PostPagesTests(TestCase):
             self.assertEqual(post_img.image, self.post.image)
 
     def test_group_list_page_show_correct_context(self):
-        """Шаблон group_list.html сформирован с правильным контекстом"""
+        """Шаблон group_list.html сформирован с правильным контекстом."""
         post_img = Post.objects.create(
             text='Тест-описание поста',
             author=self.user,
@@ -166,7 +166,7 @@ class PostPagesTests(TestCase):
 
     def test_profile_page_show_correct_context(self):
         """Шаблон profile.html сформирован
-        с правильным контекстом"""
+        с правильным контекстом."""
         post_img = Post.objects.create(
             text='Тест-описание поста',
             author=self.user,
@@ -192,7 +192,7 @@ class PostPagesTests(TestCase):
 
     def test_detail_page_show_correct_context(self):
         """Шаблон post_detail.html сформирован
-        с правильным контекстом"""
+        с правильным контекстом."""
         response = self.authorized_client.get(
             reverse(
                 'posts:post_detail',
@@ -206,7 +206,7 @@ class PostPagesTests(TestCase):
 
     def test_create_post_page_show_correct_context(self):
         """Шаблон create_post.html сформирован
-        с правильным контекстом"""
+        с правильным контекстом."""
         response = self.authorized_client.get(
             reverse(
                 'posts:post_create'
@@ -227,7 +227,7 @@ class PostPagesTests(TestCase):
 
     def test_post_edit_page_show_correct_context(self):
         """Шаблон post_edit.html сформирован
-        с правильным контекстом"""
+        с правильным контекстом."""
         response = self.authorized_client.get(
             reverse(
                 'posts:post_edit',
@@ -251,7 +251,7 @@ class PostPagesTests(TestCase):
             self.assertTrue(is_edit_context)
 
     def test_post_page_(self):
-        """Пост с группой находятся в нужных страницах"""
+        """Пост с группой находятся в нужных страницах."""
         field_urls_templates = [
             reverse('posts:index'),
             reverse(
@@ -274,7 +274,7 @@ class PostPagesTests(TestCase):
                 self.assertEqual(len(response.context['page_obj']), 2)
 
     def test_cache_index_page(self):
-        """Проверка работы кеша главной страницы"""
+        """Проверка работы кеша главной страницы."""
         cache.clear()
         url = reverse('posts:index')
         response = self.authorized_client.get(url)
@@ -289,7 +289,7 @@ class PostPagesTests(TestCase):
 
     def test_authorized_client_follow(self):
         """Подписка авторизованным клиентом
-        на других пользователей"""
+        на других пользователей."""
         follow_count = Follow.objects.count()
         self.authorized_client.get(
             reverse(
@@ -307,7 +307,7 @@ class PostPagesTests(TestCase):
 
     def test_authorized_client_unfollow(self):
         """Отписка авторизованным клиентом
-        от других пользователей"""
+        от других пользователей."""
         Follow.objects.create(
             user=self.user,
             author=self.user_follow
@@ -324,7 +324,7 @@ class PostPagesTests(TestCase):
         cache.clear()
 
     def test_new_post_for_followers(self):
-        """Отображение постов в ленте у подписчиков"""
+        """Отображение постов в ленте у подписчиков."""
         Follow.objects.create(
             user=self.user,
             author=self.user_follow
@@ -341,7 +341,7 @@ class PostPagesTests(TestCase):
         self.assertEqual(new_post, first_object)
 
     def test_new_post_for_unfollow(self):
-        """Отсутсвтие постов в ленте у гостя"""
+        """Отсутсвтие постов в ленте у гостя."""
         Follow.objects.create(
             user=self.user,
             author=self.user_follow
@@ -390,7 +390,7 @@ class PaginatorViewsTest(TestCase):
         self.unauthorized_client = Client()
 
     def test_paginator_on_pages(self):
-        """Проверка пагинации на страницах"""
+        """Проверка пагинации на страницах."""
         url_pages = [
             reverse('posts:index'),
             reverse('posts:group_list', kwargs={'slug': self.group.slug}),

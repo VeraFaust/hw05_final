@@ -49,7 +49,7 @@ class PostFormTests(TestCase):
         self.auth_client.force_login(self.user_auth)
 
     def test_create_post_other_client(self):
-        """Создание поста неавторизованным пользователем"""
+        """Создание поста неавторизованным пользователем."""
         posts_count = Post.objects.count()
         form_data = {
             'group': self.group.pk,
@@ -64,7 +64,7 @@ class PostFormTests(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_create_post(self):
-        """Валидная форма создает запись в Post"""
+        """Валидная форма создает запись в Post."""
         post_count = Post.objects.count()
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x01\x00'
@@ -102,7 +102,7 @@ class PostFormTests(TestCase):
         self.assertEqual(post.image, self.post.image)
 
     def test_edit_post_authorized_client(self):
-        """Редактирование поста авторизованным пользователем"""
+        """Редактирование поста авторизованным пользователем."""
         posts_count = Post.objects.count()
         form_data = {
             'group': self.new_group.pk,
@@ -137,7 +137,7 @@ class PostFormTests(TestCase):
         )
 
     def test_edit_post_other_client(self):
-        """Редактирование поста неавторизованным пользователем"""
+        """Редактирование поста неавторизованным пользователем."""
         AUTH_LOGIN = reverse('users:login')
         EDIT = reverse(
             'posts:post_edit',
@@ -168,7 +168,7 @@ class PostFormTests(TestCase):
         )
 
     def test_edit_post_auth_client(self):
-        """Редактирование поста не автором поста"""
+        """Редактирование поста не автором поста."""
         posts_count = Post.objects.count()
         form_data = {
             'group': self.new_group,
@@ -197,7 +197,7 @@ class PostFormTests(TestCase):
         )
 
     def test_authorized_client_comment(self):
-        """Комментирование поста авторизованным пользователем"""
+        """Комментирование поста авторизованным пользователем."""
         comments_count = Comment.objects.count()
         form_data = {
             'text': 'Тест-коментарий',
@@ -224,7 +224,7 @@ class PostFormTests(TestCase):
         )
 
     def test_other_client_comment(self):
-        """Комментирование поста неавторизованным пользователем"""
+        """Комментирование поста неавторизованным пользователем."""
         AUTH_LOGIN = reverse('users:login')
         COMMENT = reverse(
             'posts:add_comment',

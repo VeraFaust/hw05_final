@@ -72,7 +72,7 @@ class PostURLTests(TestCase):
                 self.assertEqual(name, url)
 
     def test_url_exists_at_desired_location(self):
-        """Доступ к страницам для любых пользователей"""
+        """Доступ к страницам для любых пользователей."""
         urls = [
             reverse('posts:index'),
             reverse(
@@ -103,7 +103,7 @@ class PostURLTests(TestCase):
 
     def test_urls_exists_at_desired_location(self):
         """Доступ авторизованному пользователю
-        на создание и редактирование поста"""
+        на создание и редактирование поста."""
         urls = [
             reverse(
                 'posts:post_edit',
@@ -118,7 +118,7 @@ class PostURLTests(TestCase):
 
     def test_post_create_url_redirect_other_client(self):
         """Редирект со страницы create_post для
-        неавторизованного пользователя"""
+        неавторизованного пользователя."""
         AUTH_LOGIN = reverse('login')
         NEW = reverse('posts:post_create')
         response = self.other_client.get(
@@ -132,7 +132,7 @@ class PostURLTests(TestCase):
 
     def test_post_edit_url_redirect_other_client(self):
         """Редирект со страницы post_edit для
-        неавторизованного пользователя"""
+        неавторизованного пользователя."""
         AUTH_LOGIN = reverse('users:login')
         EDIT = reverse(
             'posts:post_edit',
@@ -152,7 +152,7 @@ class PostURLTests(TestCase):
 
     def test_post_edit_url_redirect_auth_client(self):
         """Редирект со страницы post_edit
-        для не автора поста"""
+        для не автора поста."""
         EDIT_AUTH = reverse(
             'posts:post_detail',
             kwargs={'post_id': self.post.pk}
@@ -172,7 +172,7 @@ class PostURLTests(TestCase):
     def test_unexisting_page_users(self):
         """Возврат ошибки 404 пользователям
         при запросе к unexisting_page
-        и проверка его шаблона"""
+        и проверка его шаблона."""
         url_page_error_2 = '/unexisting_page/'
         for url_clients in (
             self.other_client,
@@ -187,7 +187,7 @@ class PostURLTests(TestCase):
             self.assertTemplateUsed(response, 'core/404.html')
 
     def test_urls_uses_correct_template(self):
-        """URL-адрес использует соответствующий шаблон"""
+        """URL-адрес использует соответствующий шаблон."""
         templates_url_names = {
             reverse(
                 'posts:index'
