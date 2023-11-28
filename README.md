@@ -68,7 +68,7 @@ py manage.py migrate
 py manage.py createsuperuser
 ```
 
-Перейти по ссылке:
+Перейти по ссылке:  
 На сайт http://veronikaf.pythonanywhere.com/  
 В админ-зону http://veronikaf.pythonanywhere.com/admin
 
