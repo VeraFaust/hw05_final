@@ -47,7 +47,7 @@ python -m venv venv
 source venv/Scripts/activate
 ```
 
-- Установите зависимости из файла requirements.txt
+- Установите зависимости из файла requirements.txt:
 ```
 py -m pip install --upgrade pip
 ```
@@ -68,9 +68,9 @@ py manage.py migrate
 py manage.py createsuperuser
 ```
 
-Перейти по ссылке:  
-На сайт http://veronikaf.pythonanywhere.com/  
-В админ-зону http://veronikaf.pythonanywhere.com/admin
+## Ссылки:
+- Сайт: http://veronikaf.pythonanywhere.com/
+- -Админ-зона: http://veronikaf.pythonanywhere.com/admin
 
 ## Автор
 Вера Фауст
