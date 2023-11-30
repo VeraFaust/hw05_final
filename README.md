@@ -70,7 +70,7 @@ py manage.py createsuperuser
 
 ## Ссылки:
 - Сайт: http://veronikaf.pythonanywhere.com/
-- -Админ-зона: http://veronikaf.pythonanywhere.com/admin
+- Админ-зона: http://veronikaf.pythonanywhere.com/admin
 
 ## Автор
 Вера Фауст
